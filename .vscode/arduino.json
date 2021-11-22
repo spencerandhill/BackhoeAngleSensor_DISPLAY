@@ -1,5 +1,5 @@
 {
-    "sketch": "BackhoeAngleSensor_lvgl.ino",
+    "sketch": "BackhoeAngleSensor_DISPLAY.ino",
     "port": "COM10",
     "board": "esp32:esp32:esp32wrover",
     "output": "build",
