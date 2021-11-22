@@ -1,2 +1,6 @@
 -add Function to flip X-Range and Y-Range (making the upper or lower end negative/positive)
 -Could be possible, that a negative angle of the shovel is showed as positive value on the display due to wrong arrangement of sensor
+
+
+-MAC ADRESS ESP8266-SENSOR: A4:CF:12:BF:76:2D
+-MAC ADRESS ESP32-DISPLAY:  24:62:AB:DD:49:68

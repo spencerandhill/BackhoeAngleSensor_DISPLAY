@@ -1,6 +1,6 @@
 {
     "sketch": "BackhoeAngleSensor_DISPLAY.ino",
-    "port": "COM10",
+    "port": "COM12",
     "board": "esp32:esp32:esp32wrover",
     "output": "build",
     "configuration": "PartitionScheme=default,FlashMode=qio,FlashFreq=80,UploadSpeed=115200,DebugLevel=none"
