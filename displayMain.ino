@@ -80,10 +80,3 @@ void createDisplayContent()
     drawShovel();
     drawOffsetButton();
 }
-
-void loopDisplay()
-{
-    updateSliderXY(getVerticalAngleWithOffset(), getHorizontalAngleWithOffset());
-    updateShovelX(getVerticalAngleWithOffset());
-    lv_task_handler(); /* let the GUI do its work */
-}

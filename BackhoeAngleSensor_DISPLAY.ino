@@ -3,7 +3,6 @@
 //                        -No Sensor Offset calibration, yet.
 
 #include "makerfabs_pin.h"
-#include <Wire.h>
 #include <lvgl.h>
 #include <lv_examples.h>
 #include <TFT_eSPI.h>
@@ -17,16 +16,14 @@ void setup(void)
   Serial.begin(115200);
   Serial.println("BackhoeAngleSensor BAS - (c) Author Jan Rathmer"); Serial.println("");
 
-  initEEPROM();
-  setFlipXYToEEPROM(true);
-  initSensor();
-  initDisplay();
+  initEspNow();
+  // initDisplay();
 }
 
 void loop(void)
 {
-// Check Buttons
-  loopSensor();
-  loopDisplay();
-  delay(5);
+// Let the LVGL-GUI do its work
+  lv_task_handler();
+  // delay(5);
+  loopEspNow();
 }
