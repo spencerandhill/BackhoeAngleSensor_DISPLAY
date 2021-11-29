@@ -74,4 +74,5 @@ void createDisplayContent() {
     createSensorSliders();
     drawShovel();
     drawOffsetButton();
+    drawFlipXYSlider();
 }

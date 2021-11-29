@@ -112,6 +112,7 @@ void loopEspNow() {
         Serial.println();
 
         // Now Update the graphics
+        updateFlipXYSlider(sensorData.flipXYAxis);
         updateSliderXY(sensorData.verticalAngle, sensorData.horizonAngle);
         updateShovelX(sensorData.verticalAngle);
 

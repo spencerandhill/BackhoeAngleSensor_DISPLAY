@@ -6,11 +6,19 @@ static lv_obj_t * sliderX_label;
 static lv_obj_t * sliderY_label;
 
 // Set Offset Button
-static void event_handler(lv_obj_t * obj, lv_event_t event);
+static void event_handlerOffsetButton(lv_obj_t * obj, lv_event_t event);
 static lv_obj_t * buttonSetOffsetLabel;
 static lv_obj_t * buttonSetOffset;
 
 #define OFFSET_BUTTON_SET_WIDTH 100
+
+
+// FlipXY Switch
+static void event_handlerFlipXYSwitch(lv_obj_t * obj, lv_event_t event);
+static lv_obj_t * switchFlipXYLabel;
+static lv_obj_t * switchFlipXY;
+
+#define FLIPXY_SWITCH_SET_WIDTH 70
 
 // Offset-Animation Arc
 #define OFFSET_ANIMATION_ARC_WIDTH 150
@@ -86,7 +94,7 @@ void updateOffsetArc() {
     lv_arc_set_value(arc, currentArcValue + 1);
 }
 
-static void event_handler(lv_obj_t * obj, lv_event_t event) {
+static void event_handlerOffsetButton(lv_obj_t * obj, lv_event_t event) {
     if(event == LV_EVENT_PRESSED) {
         printf("Pressed\n");
         drawSetOffsetArc();
@@ -102,12 +110,43 @@ static void event_handler(lv_obj_t * obj, lv_event_t event) {
 
 void drawOffsetButton() {
     buttonSetOffset = lv_btn_create(lv_scr_act(), NULL);
-    lv_obj_set_event_cb(buttonSetOffset, event_handler);
+    lv_obj_set_event_cb(buttonSetOffset, event_handlerOffsetButton);
     lv_obj_set_size(buttonSetOffset, OFFSET_BUTTON_SET_WIDTH, 50);
-    lv_obj_set_pos(buttonSetOffset, (LCD_WIDTH - OFFSET_BUTTON_SET_WIDTH) / 2, 350);
+    lv_obj_set_pos(buttonSetOffset, (LCD_WIDTH - OFFSET_BUTTON_SET_WIDTH) - 10, 330);
 
     buttonSetOffsetLabel = lv_label_create(buttonSetOffset, NULL);
     lv_label_set_text(buttonSetOffsetLabel, "Set Offset");
+}
+
+static void event_handlerFlipXYSwitch(lv_obj_t * obj, lv_event_t event)
+{
+    if(event == LV_EVENT_VALUE_CHANGED) {
+        bool flipped = lv_switch_get_state(obj);
+        printf("State: %s\n", flipped ? "On" : "Off");
+
+        sendFlipXYCommand(flipped);
+    }
+}
+
+void drawFlipXYSlider() {
+    /*Create a switch and apply the styles*/
+    switchFlipXY = lv_switch_create(lv_scr_act(), NULL);
+    lv_obj_set_event_cb(switchFlipXY, event_handlerFlipXYSwitch);
+    lv_obj_set_size(switchFlipXY, FLIPXY_SWITCH_SET_WIDTH, 50);
+    lv_obj_set_pos(switchFlipXY, 30, 330);
+
+    switchFlipXYLabel = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(switchFlipXYLabel, "Flip XY Axis?");
+    lv_obj_set_size(switchFlipXYLabel, 100, 20);
+    lv_obj_set_pos(switchFlipXYLabel, 25, 380);
+}
+
+void updateFlipXYSlider(bool flipped) {
+    if(flipped) {
+        lv_switch_on(switchFlipXY, LV_ANIM_ON);
+    } else {
+        lv_switch_off(switchFlipXY, LV_ANIM_ON);
+    }
 }
 
 void drawShovel() {
