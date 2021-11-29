@@ -25,8 +25,7 @@ LV_IMG_DECLARE(shovel);
 
 lv_obj_t * shovelImg;
 
-void createSensorSliders()
-{
+void createSensorSliders() {
 // X-Slider    
     /* Create a slider at the bottom of the display */
     sliderX = lv_slider_create(lv_scr_act(), NULL);
@@ -58,8 +57,7 @@ void createSensorSliders()
     lv_obj_align(sliderY_label, sliderY, LV_ALIGN_OUT_TOP_MID, 0, 0);
 }
 
-void updateSliderXY(float xValue, float yValue) 
-{
+void updateSliderXY(float xValue, float yValue)  {
     lv_slider_set_value(sliderX, (int16_t) xValue, LV_ANIM_OFF);
     lv_label_set_text(sliderX_label, String(xValue, 1).c_str());
 
@@ -67,8 +65,7 @@ void updateSliderXY(float xValue, float yValue)
     lv_label_set_text(sliderY_label, String(yValue, 1).c_str());
 }
 
-void drawSetOffsetArc()
-{
+void drawSetOffsetArc() {
     /*Create an Arc*/
     arc = lv_arc_create(lv_scr_act(), NULL);
     
@@ -84,14 +81,12 @@ void drawSetOffsetArc()
     arcCreatedTime = millis();
 }
 
-void updateOffsetArc()
-{
+void updateOffsetArc() {
     int16_t currentArcValue = lv_arc_get_value(arc);
     lv_arc_set_value(arc, currentArcValue + 1);
 }
 
-static void event_handler(lv_obj_t * obj, lv_event_t event)
-{
+static void event_handler(lv_obj_t * obj, lv_event_t event) {
     if(event == LV_EVENT_PRESSED) {
         printf("Pressed\n");
         drawSetOffsetArc();
@@ -105,8 +100,7 @@ static void event_handler(lv_obj_t * obj, lv_event_t event)
     }
 }
 
-void drawOffsetButton()
-{
+void drawOffsetButton() {
     buttonSetOffset = lv_btn_create(lv_scr_act(), NULL);
     lv_obj_set_event_cb(buttonSetOffset, event_handler);
     lv_obj_set_size(buttonSetOffset, OFFSET_BUTTON_SET_WIDTH, 50);
@@ -116,8 +110,7 @@ void drawOffsetButton()
     lv_label_set_text(buttonSetOffsetLabel, "Set Offset");
 }
 
-void drawShovel()
-{
+void drawShovel() {
     shovelImg = lv_img_create(lv_scr_act(), NULL);
     lv_img_set_src(shovelImg, &shovel);
     lv_obj_set_pos(shovelImg, 70, 50);
@@ -126,7 +119,6 @@ void drawShovel()
     lv_img_set_angle(shovelImg, 20);
 }
 
-void updateShovelX(float xValue)
-{
+void updateShovelX(float xValue) {
     lv_img_set_angle(shovelImg, (int16_t) xValue * 10);
 }

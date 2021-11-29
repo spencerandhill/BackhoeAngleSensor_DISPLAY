@@ -9,16 +9,14 @@ static bool touch_driver_read(lv_indev_drv_t *drv, lv_indev_data_t *data);
 
 #if USE_LV_LOG != 0
 /* Serial debugging */
-void my_print(lv_log_level_t level, const char * file, uint32_t line, const char * dsc)
-{
+void my_print(lv_log_level_t level, const char * file, uint32_t line, const char * dsc) {
     Serial.printf("%s@%d->%s\r\n", file, line, dsc);
     Serial.flush();
 }
 #endif
 
 /* Display flushing */
-void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
-{
+void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
     uint32_t w = (area->x2 - area->x1 + 1);
     uint32_t h = (area->y2 - area->y1 + 1);
 
@@ -30,14 +28,12 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
     lv_disp_flush_ready(disp);
 }
 
-bool touch_driver_read(lv_indev_drv_t *drv, lv_indev_data_t *data)
-{
+bool touch_driver_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
     bool res = ft6x36_read(drv, data);
     return res;
 }
 
-void initDisplay()
-{
+void initDisplay() {
     Serial.println("Display Begin");
 
     // LVGL Init
@@ -74,8 +70,7 @@ void initDisplay()
     createDisplayContent();
 }
 
-void createDisplayContent()
-{
+void createDisplayContent() {
     createSensorSliders();
     drawShovel();
     drawOffsetButton();
