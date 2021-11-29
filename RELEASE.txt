@@ -1,0 +1,6 @@
+// Version: 0.2
+// Hardware split to ESP32 with Display and separate ESP8266 Module with Sensor. Both connected via WiFi.
+
+// Version: 0.1
+// First working version: -Full hardware support for Display (including LVGL), Touch-Driver and BNO055 Sensor.
+//                        -No Sensor Offset calibration, yet.
