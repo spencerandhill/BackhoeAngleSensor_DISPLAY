@@ -28,17 +28,14 @@ void drawSystemStatus() {
 void updateSystemStatus(int systemStatus) {
     if(systemStatus != lastSystemStatus) { // Check, if the status has changed to prevent unnecessary updates
         switch(systemStatus) {
-            case SENSOR_STATUS_ERROR: // Sensor OFFLINE or something really bad happened
+            case SYSTEM_STATUS_ERROR: // Sensor OFFLINE or something really bad happened
                 lv_led_set_color(systemStatusLED, lv_palette_main(LV_PALETTE_RED));
                 break;
-            case SENSOR_STATUS_WARNING: // Sensor ALIVE but NOT OK
+            case SYSTEM_STATUS_WARNING: // Sensor ALIVE but NOT OK
                 lv_led_set_color(systemStatusLED, lv_palette_main(LV_PALETTE_ORANGE));
                 break;
-            case SENSOR_STATUS_OK: // Sensor ALIVE and OK
+            case SYSTEM_STATUS_OK: // Sensor ALIVE and OK
                 lv_led_set_color(systemStatusLED, lv_palette_main(LV_PALETTE_GREEN));
-                break;
-            case SENSOR_STATUS_ERROR + 10: // This happenes, when the sensor value + 10 is given in
-                lv_led_set_color(systemStatusLED, lv_palette_main(LV_PALETTE_ORANGE));
                 break;
         }
 

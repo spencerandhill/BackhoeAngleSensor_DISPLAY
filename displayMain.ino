@@ -74,6 +74,7 @@ void initDisplay() {
 }
 
 void createDisplayContent() {
+    drawSystemStatus();
     drawSensorStatus();
     drawSensorSliders();
     drawShovel();

@@ -19,5 +19,6 @@ void loop(void) {
 // Let the LVGL-GUI do its work
   lv_timer_handler();
   // delay(5);
+  checkSystemStatus();
   loopEspNow();
 }

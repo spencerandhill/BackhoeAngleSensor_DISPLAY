@@ -118,6 +118,7 @@ void sendFlipXYCommand(bool flipXY) {
 void loopEspNow() {
     // Check, if sensorData has been received for some time 
     if(millis() - sensorLastTimeSeen > SENSOR_OFFLINE_TIMEOUT) {
+      updateSystemStatus(SYSTEM_STATUS_WARNING);  // System switches to WARNING
       updateSensorStatus(SENSOR_STATUS_ERROR);      // Sensor switches to ERROR
     }
 
