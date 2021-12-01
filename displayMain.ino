@@ -1,10 +1,5 @@
 #include "ft6x36.h"
 
-// Objects, that should be seen on EVERY Screen at the LV_INDEV_TYPE_POINTER
-lv_obj_t * systemStatusLED;
-lv_obj_t * systemStatusLEDLabel;
-int lastSensorStatus = SENSOR_STATUS_ERROR; // Check last Sensor status before updating to prevent unnecessary Display Updates
-
 TFT_eSPI tft = TFT_eSPI(); /* TFT instance */
 
 // LVGL Stuff
@@ -78,41 +73,8 @@ void initDisplay() {
     createDisplayContent();
 }
 
-void drawSystemSensorStatus() {
-
-    systemStatusLED  = lv_led_create(lv_scr_act());
-    lv_obj_set_size(systemStatusLED, 14, 14);
-    lv_obj_set_pos(systemStatusLED, LCD_WIDTH - 19, 9);
-    lv_led_on(systemStatusLED);
-    lv_led_set_brightness(systemStatusLED, 255);
-    lv_led_set_color(systemStatusLED, lv_palette_main(LV_PALETTE_RED));
-
-    /* Create a label in front of the status LED */
-    systemStatusLEDLabel = lv_label_create(lv_scr_act());
-    lv_label_set_text(systemStatusLEDLabel, "Sensor");
-    lv_obj_align_to(systemStatusLEDLabel, systemStatusLED, LV_ALIGN_OUT_LEFT_MID, -9, 0);
-}
-
-void updateSystemSensorStatus(int sensorStatus) {
-    if(sensorStatus != lastSensorStatus) { // Check, if the status has changed to prevent unnecessary updates
-        switch(sensorStatus) {
-            case SENSOR_STATUS_ERROR: // Sensor OFFLINE or something really bad happened
-                lv_led_set_color(systemStatusLED, lv_palette_main(LV_PALETTE_RED));
-                break;
-            case SENSOR_STATUS_WARNING: // Sensor ALIVE but NOT OK
-                lv_led_set_color(systemStatusLED, lv_palette_main(LV_PALETTE_ORANGE));
-                break;
-            case SENSOR_STATUS_OK: // Sensor ALIVE and OK
-                lv_led_set_color(systemStatusLED, lv_palette_main(LV_PALETTE_GREEN));
-                break;
-        }
-
-        lastSensorStatus = sensorStatus;
-    }
-}
-
 void createDisplayContent() {
-    drawSystemSensorStatus();
+    drawSensorStatus();
     drawSensorSliders();
     drawShovel();
     drawCalibrationButton();

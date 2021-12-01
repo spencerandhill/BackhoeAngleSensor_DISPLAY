@@ -118,7 +118,7 @@ void sendFlipXYCommand(bool flipXY) {
 void loopEspNow() {
     // Check, if sensorData has been received for some time 
     if(millis() - sensorLastTimeSeen > SENSOR_OFFLINE_TIMEOUT) {
-      updateSystemSensorStatus(SENSOR_STATUS_ERROR);
+      updateSensorStatus(SENSOR_STATUS_ERROR);      // Sensor switches to ERROR
     }
 
     if(newDataReceived == true){
@@ -141,7 +141,7 @@ void loopEspNow() {
         updateFlipXYSwitch(sensorData.flipXYAxis);
         updateSensorSliders(sensorData.verticalAngle, sensorData.horizonAngle);
         updateShovelX(sensorData.verticalAngle);
-        updateSystemSensorStatus(sensorData.sensorStatus);
+        updateSensorStatus(sensorData.sensorStatus);
         // Reset for the next loop-run
         newDataReceived = false;
     }
