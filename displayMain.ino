@@ -1,5 +1,10 @@
 #include "ft6x36.h"
 
+// Objects, that should be seen on EVERY Screen at the LV_INDEV_TYPE_POINTER
+lv_obj_t * systemStatusLED;
+lv_obj_t * systemStatusLEDLabel;
+int lastSensorStatus = SENSOR_STATUS_ERROR; // Check last Sensor status before updating to prevent unnecessary Display Updates
+
 TFT_eSPI tft = TFT_eSPI(); /* TFT instance */
 
 // LVGL Setup Stuff
@@ -70,9 +75,43 @@ void initDisplay() {
     createDisplayContent();
 }
 
+void drawSystemSensorStatus() {
+
+    systemStatusLED  = lv_led_create(lv_scr_act(), NULL);
+    lv_obj_set_size(systemStatusLED, 10, 10);
+    lv_obj_set_pos(systemStatusLED, LCD_WIDTH - 15, 5);
+    lv_led_on(systemStatusLED);
+    lv_led_set_bright(systemStatusLED, 10);
+
+    /* Create a label in front of the status LED */
+    systemStatusLEDLabel = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(systemStatusLEDLabel, "Sensor");
+    lv_obj_set_auto_realign(systemStatusLEDLabel, true);
+    lv_obj_align(systemStatusLEDLabel, systemStatusLED, LV_ALIGN_OUT_LEFT_MID, -5, 0);
+}
+
+void updateSystemSensorStatus(int sensorStatus) {
+    if(sensorStatus != lastSensorStatus) { // Check, if the status has changed to prevent unnecessary updates
+        switch(sensorStatus) {
+            case SENSOR_STATUS_ERROR: // Sensor OFFLINE or something really bad happened
+                lv_led_off(systemStatusLED);
+                break;
+            case SENSOR_STATUS_WARNING: // Sensor ALIVE but NOT OK
+                lv_led_set_bright(systemStatusLED, 128);
+                break;
+            case SENSOR_STATUS_OK: // Sensor ALIVE and OK
+                lv_led_set_bright(systemStatusLED, 255);
+                break;
+        }
+
+        lastSensorStatus = sensorStatus;
+    }
+}
+
 void createDisplayContent() {
-    createSensorSliders();
+    drawSystemSensorStatus();
+    drawSensorSliders();
     drawShovel();
-    drawOffsetButton();
+    drawCalibrationButton();
     drawFlipXYSlider();
 }

@@ -5,6 +5,9 @@
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status);
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len);
 
+//###################### GENERAL SENSOR INFO ################################
+unsigned long sensorLastTimeSeen = 0;
+
 //###################### RECEIVE DATA ################################
 bool newDataReceived = false;
 
@@ -15,6 +18,7 @@ typedef struct struct_sensor_data {
   float verticalAngle;
   bool flipXYAxis;
   int temperature;
+  int sensorStatus;
 } struct_sensor_data;
 
 // Create a struct_sensor_data container
@@ -27,9 +31,8 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.print("Bytes received: ");
     Serial.println(len);
     newDataReceived = true;
+    sensorLastTimeSeen = millis();
 }
-
-
 
 //###################### SEND DATA ################################
 // Structure to receive data
@@ -84,6 +87,19 @@ void initEspNow() {
   esp_now_register_recv_cb(OnDataRecv);
 }
 
+void sendCalibrateSensor() {
+  
+  sensorCommand.commandType = DISPLAY_COMMAND_CALIBRATE_SENSOR;
+  sensorCommand.commandValue = true;
+
+  // Send message via ESP-NOW
+  int result = esp_now_send(broadcastAddressEsp8266Sensor, (uint8_t *) &sensorCommand, sizeof(sensorCommand));
+  if (result != 0) {
+    Serial.println("Error sending data - DISPLAY_COMMAND_CALIBRATE_SENSOR");
+  }
+
+}
+
 void sendFlipXYCommand(bool flipXY) {
 
   sensorCommand.commandType = DISPLAY_COMMAND_FLIP_XY;
@@ -92,12 +108,17 @@ void sendFlipXYCommand(bool flipXY) {
   // Send message via ESP-NOW
   int result = esp_now_send(broadcastAddressEsp8266Sensor, (uint8_t *) &sensorCommand, sizeof(sensorCommand));
   if (result != 0) {
-    Serial.println("Error sending data");
+    Serial.println("Error sending data - DISPLAY_COMMAND_FLIP_XY");
   }
 
 }
 
 void loopEspNow() {
+    // Check, if sensorData has been received for some time 
+    if(millis() - sensorLastTimeSeen > SENSOR_OFFLINE_TIMEOUT) {
+      updateSystemSensorStatus(SENSOR_STATUS_ERROR);
+    }
+
     if(newDataReceived == true){
         Serial.print("HorizonAngle: ");
         Serial.println(sensorData.horizonAngle);
@@ -109,13 +130,16 @@ void loopEspNow() {
 
         Serial.print("Temperature: ");
         Serial.println(sensorData.temperature);
+
+        Serial.print("SensorStatus: ");
+        Serial.println(sensorData.sensorStatus);
         Serial.println();
 
         // Now Update the graphics
         updateFlipXYSlider(sensorData.flipXYAxis);
-        updateSliderXY(sensorData.verticalAngle, sensorData.horizonAngle);
+        updateSensorSliders(sensorData.verticalAngle, sensorData.horizonAngle);
         updateShovelX(sensorData.verticalAngle);
-
+        updateSystemSensorStatus(sensorData.sensorStatus);
         // Reset for the next loop-run
         newDataReceived = false;
     }
