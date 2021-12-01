@@ -4,7 +4,6 @@
 // Shovel
 #define LV_COLOR_DEPTH 1
 LV_IMG_DECLARE(shovel);
-
 lv_obj_t * shovelImg;
 
 

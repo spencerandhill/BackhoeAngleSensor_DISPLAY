@@ -7,7 +7,7 @@ int lastSensorStatus = SENSOR_STATUS_ERROR; // Check last Sensor status before u
 
 TFT_eSPI tft = TFT_eSPI(); /* TFT instance */
 
-// LVGL Setup Stuff
+// LVGL Prototypes
 static lv_disp_buf_t disp_buf;
 static lv_color_t buf[LV_HOR_RES_MAX * 10];
 static bool touch_driver_read(lv_indev_drv_t *drv, lv_indev_data_t *data);
