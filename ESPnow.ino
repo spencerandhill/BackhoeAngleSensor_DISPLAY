@@ -120,6 +120,7 @@ void loopEspNow() {
     if(millis() - sensorLastTimeSeen > SENSOR_OFFLINE_TIMEOUT) {
       updateSystemStatus(SYSTEM_STATUS_WARNING);  // System switches to WARNING
       updateSensorStatus(SENSOR_STATUS_ERROR);      // Sensor switches to ERROR
+      updateSensorTemperature(-50);
     }
 
     if(newDataReceived == true){
@@ -142,6 +143,7 @@ void loopEspNow() {
         updateFlipXYSwitch(sensorData.flipXYAxis);
         updateSensorSliders(sensorData.verticalAngle, sensorData.horizonAngle);
         updateShovelX(sensorData.verticalAngle);
+        updateSensorTemperature(sensorData.temperature);
         updateSensorStatus(sensorData.sensorStatus);
         // Reset for the next loop-run
         newDataReceived = false;

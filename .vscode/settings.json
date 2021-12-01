@@ -45,7 +45,8 @@
         "i2c_manager.h": "c",
         "i2c.h": "c",
         "lvgl_i2c_conf.h": "c",
-        "constants.h": "c"
+        "constants.h": "c",
+        "xlocinfo": "cpp"
     },
     "arduino.logLevel": "info"
 }

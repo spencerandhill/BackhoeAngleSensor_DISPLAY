@@ -5,11 +5,13 @@ lv_obj_t * systemStatusLED;
 lv_obj_t * systemStatusLEDLabel;
 int lastSystemStatus = SENSOR_STATUS_ERROR; // Check last System status before updating to prevent unnecessary Display Updates
 
-
 // Sensor Status LED (top right corner)
 lv_obj_t * sensorStatusLED;
 lv_obj_t * sensorStatusLEDLabel;
 int lastSensorStatus = SENSOR_STATUS_ERROR; // Check last Sensor status before updating to prevent unnecessary Display Updates
+
+// Sensor Temperature
+lv_obj_t * sensorTemperatureLabel;
 
 void drawSystemStatus() {
     systemStatusLED  = lv_led_create(lv_scr_act());
@@ -73,4 +75,50 @@ void updateSensorStatus(int sensorStatus) {
 
         lastSensorStatus = sensorStatus;
     }
+}
+
+void drawSensorTemperature() {
+    sensorTemperatureLabel = lv_label_create(lv_scr_act());
+    lv_label_set_recolor(sensorTemperatureLabel, true);                      /*Enable re-coloring by commands in the text*/
+    lv_label_set_text(sensorTemperatureLabel, "#000000 0°C#");
+    lv_obj_set_width(sensorTemperatureLabel, 150);  /*Set smaller width to make the lines wrap*/
+    lv_obj_set_style_text_align(sensorTemperatureLabel, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_text_font(sensorTemperatureLabel, &lv_font_montserrat_18, 0);
+    lv_obj_align(sensorTemperatureLabel, LV_ALIGN_TOP_MID, 0, 5);
+}
+
+void updateSensorTemperature(int temperature) {
+    String temperatureLabel = "";
+
+    if(temperature >= 30) {
+        temperatureLabel = "#ff0000 " + String(temperature) + "°C#"; // RED
+        lv_label_set_text(sensorTemperatureLabel, temperatureLabel.c_str());
+        return;
+    }
+
+    if(temperature >= 25) {
+        temperatureLabel = "#ff4000 " + String(temperature) + "°C#"; // Deep Orange
+        lv_label_set_text(sensorTemperatureLabel, temperatureLabel.c_str());
+        return;
+    }
+
+    if(temperature >= 15) {
+        temperatureLabel = "#000000 " + String(temperature) + "°C#"; // Black
+        lv_label_set_text(sensorTemperatureLabel, temperatureLabel.c_str());
+        return;
+    }
+
+    if(temperature >= 5) {
+        temperatureLabel = "#0080ff " + String(temperature) + "°C#"; // Sky Blue
+        lv_label_set_text(sensorTemperatureLabel, temperatureLabel.c_str());
+        return;
+    }
+
+    if(temperature >= -30 ) {
+        temperatureLabel = "#ff0000 " + String(LV_SYMBOL_WARNING) + "#" + " #0000ff " + String(temperature) + "°C#"; // Blue
+        lv_label_set_text(sensorTemperatureLabel, temperatureLabel.c_str());
+        return;
+    }
+
+    lv_label_set_text(sensorTemperatureLabel, "#ff0000 ERROR#");
 }

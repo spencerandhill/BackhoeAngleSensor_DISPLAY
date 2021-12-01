@@ -76,6 +76,7 @@ void initDisplay() {
 void createDisplayContent() {
     drawSystemStatus();
     drawSensorStatus();
+    drawSensorTemperature();
     drawSensorSliders();
     drawShovel();
     drawCalibrationButton();
