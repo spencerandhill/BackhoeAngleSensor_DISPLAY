@@ -1,6 +1,14 @@
-//#############SECTION ESP NOW #############
-uint8_t broadcastAddressEsp8266Sensor[] = {0xA4, 0xCF, 0x12, 0xBF, 0x76, 0x2D};
+//#############SECTION HARDWARE #############
 
+#define DISP_HOR_RES 320
+#define DISP_VER_RES 480
+
+#define TOUCH_I2C_PORT              I2C_NUM_1
+
+#define CONFIG_LV_TOUCH_I2C_SDA     I2C_SDA
+#define CONFIG_LV_TOUCH_I2C_SCL     I2C_SCL
+
+//#############SECTION ESP NOW #############
 #define SENSOR_OFFLINE_TIMEOUT 2000
 
 #define SENSOR_STATUS_ERROR 0   // Sensor OFFLINE or something really bad happened (Peripheral error, or something else)

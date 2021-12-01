@@ -39,6 +39,13 @@
         "random": "cpp",
         "chrono": "cpp",
         "format": "cpp",
-        "forward_list": "cpp"
-    }
+        "forward_list": "cpp",
+        "iosfwd": "c",
+        "xlocbuf": "c",
+        "i2c_manager.h": "c",
+        "i2c.h": "c",
+        "lvgl_i2c_conf.h": "c",
+        "constants.h": "c"
+    },
+    "arduino.logLevel": "info"
 }

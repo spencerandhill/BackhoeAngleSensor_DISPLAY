@@ -17,33 +17,32 @@ static lv_obj_t * sliderY_label;
 void drawSensorSliders() {
 // X-Slider    
     /* Create a slider at the bottom of the display */
-    sliderX = lv_slider_create(lv_scr_act(), NULL);
-    lv_obj_align(sliderX, NULL, LV_ALIGN_CENTER, 0, 10);
+    sliderX = lv_slider_create(lv_scr_act());
+    lv_obj_align_to(sliderX, NULL, LV_ALIGN_CENTER, 0, 10);
+
     lv_slider_set_range(sliderX, -20, 20);
     lv_obj_set_size(sliderX, 200, 50);
     lv_obj_set_pos(sliderX, 50, 230);
     lv_slider_set_value(sliderX, 0, LV_ANIM_OFF);
     
     /* Create a label below the slider */
-    sliderX_label = lv_label_create(lv_scr_act(), NULL);
+    sliderX_label = lv_label_create(lv_scr_act());
     lv_label_set_text(sliderX_label, "0");
-    lv_obj_set_auto_realign(sliderX_label, true);
-    lv_obj_align(sliderX_label, sliderX, LV_ALIGN_OUT_BOTTOM_LEFT, -5, 10);
+    lv_obj_align_to(sliderX_label, sliderX, LV_ALIGN_OUT_BOTTOM_LEFT, -5, 10);
 
 // Y-Slider    
     /* Create a slider at the right of the display */
-    sliderY = lv_slider_create(lv_scr_act(), NULL);
-    lv_obj_align(sliderY, NULL, LV_ALIGN_CENTER, 0, 10);
+    sliderY = lv_slider_create(lv_scr_act());
+    lv_obj_align_to(sliderY, NULL, LV_ALIGN_CENTER, 0, 10);
     lv_slider_set_range(sliderY, -128, 128);
     lv_obj_set_size(sliderY, 50, 200);
     lv_obj_set_pos(sliderY, 250, 50);
     lv_slider_set_value(sliderY, 0, LV_ANIM_OFF);
 
     /* Create a label below the slider */
-    sliderY_label = lv_label_create(lv_scr_act(), NULL);
+    sliderY_label = lv_label_create(lv_scr_act());
     lv_label_set_text(sliderY_label, "0");
-    lv_obj_set_auto_realign(sliderY_label, true);
-    lv_obj_align(sliderY_label, sliderY, LV_ALIGN_OUT_TOP_MID, 0, 0);
+    lv_obj_align_to(sliderY_label, sliderY, LV_ALIGN_OUT_TOP_MID, 0, 0);
 }
 
 void updateSensorSliders(float xValue, float yValue)  {
@@ -55,7 +54,7 @@ void updateSensorSliders(float xValue, float yValue)  {
 }
 
 void drawShovel() {
-    shovelImg = lv_img_create(lv_scr_act(), NULL);
+    shovelImg = lv_img_create(lv_scr_act());
     lv_img_set_src(shovelImg, &shovel);
     lv_obj_set_pos(shovelImg, 70, 50);
 

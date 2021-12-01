@@ -6,6 +6,8 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status);
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len);
 
 //###################### GENERAL SENSOR INFO ################################
+uint8_t broadcastAddressEsp8266Sensor[] = {0xA4, 0xCF, 0x12, 0xBF, 0x76, 0x2D};
+
 unsigned long sensorLastTimeSeen = 0;
 
 //###################### RECEIVE DATA ################################
@@ -136,7 +138,7 @@ void loopEspNow() {
         Serial.println();
 
         // Now Update the graphics
-        updateFlipXYSlider(sensorData.flipXYAxis);
+        updateFlipXYSwitch(sensorData.flipXYAxis);
         updateSensorSliders(sensorData.verticalAngle, sensorData.horizonAngle);
         updateShovelX(sensorData.verticalAngle);
         updateSystemSensorStatus(sensorData.sensorStatus);

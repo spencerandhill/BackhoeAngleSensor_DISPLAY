@@ -1,20 +1,20 @@
 /*
 * Copyright © 2020 Wolfgang Christl
 
-* Permission is hereby granted, free of charge, to any person obtaining a copy of this 
-* software and associated documentation files (the “Software”), to deal in the Software 
-* without restriction, including without limitation the rights to use, copy, modify, merge, 
-* publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons 
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the “Software”), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
 * to whom the Software is furnished to do so, subject to the following conditions:
 *
-* The above copyright notice and this permission notice shall be included in all copies or 
+* The above copyright notice and this permission notice shall be included in all copies or
 * substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
-* PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
-* ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+*
+* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+* ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 */
 
@@ -23,14 +23,12 @@
 #include <lvgl.h>
 #include "ft6x36.h"
 #include "lvgl_i2c_conf.h"
-#include "tp_i2c.h"
-#include "esp_err.h"
-
+#include "CONSTANTS.h"
 #define TAG "FT6X36"
 
-
-ft6x36_status_t ft6x36_status;
-uint8_t current_dev_addr;       // set during init
+static ft6x36_status_t ft6x36_status;
+static uint8_t current_dev_addr;       // set during init
+static ft6x36_touch_t touch_inputs = { -1, -1, LV_INDEV_STATE_REL };    // -1 coordinates to designate it was never touched
 
 esp_err_t ft6x06_i2c_read8(uint8_t slave_addr, uint8_t register_addr, uint8_t *data_buf) {
     i2c_cmd_handle_t i2c_cmd = i2c_cmd_link_create();
@@ -74,12 +72,12 @@ uint8_t ft6x36_get_gesture_id() {
 void ft6x06_init(uint16_t dev_addr) {
     if (!ft6x36_status.inited) {
 
-/* I2C master is initialized before calling this function */
-        esp_err_t code = i2c_master_init();
+        /* I2C master is initialized before calling this function */
+        esp_err_t masterInitReturnCode = i2c_master_init();
 
-        if (code != ESP_OK) {
+        if (masterInitReturnCode != ESP_OK) {
             ft6x36_status.inited = false;
-            ESP_LOGE(TAG, "Error during I2C init %s", esp_err_to_name(code));
+            ESP_LOGE(TAG, "Error during I2C init %s", esp_err_to_name(masterInitReturnCode));
         } else {
             ft6x36_status.inited = true;
             current_dev_addr = dev_addr;
@@ -113,12 +111,21 @@ void ft6x06_init(uint16_t dev_addr) {
   * @retval Always false
   */
 bool ft6x36_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
+    if (!ft6x36_status.inited) {
+        ESP_LOGE(TAG, "Init first!");
+        return 0x00;
+    }
+
     uint8_t data_xy[4];        // 2 bytes X | 2 bytes Y
     uint8_t touch_pnt_cnt;        // Number of detected touch points
     static int16_t last_x = 0;  // 12bit pixel value
     static int16_t last_y = 0;  // 12bit pixel value
 
-    ft6x06_i2c_read8(current_dev_addr, FT6X36_TD_STAT_REG, &touch_pnt_cnt);
+    esp_err_t ret = ft6x06_i2c_read8(current_dev_addr, FT6X36_TD_STAT_REG, &touch_pnt_cnt);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Error talking to touch IC: %s", esp_err_to_name(ret));
+    }
+
     if (touch_pnt_cnt != 1) {    // ignore no touch & multi touch
         data->point.x = last_x;
         data->point.y = last_y;
@@ -139,7 +146,7 @@ bool ft6x36_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
     i2c_master_read_byte(i2c_cmd, &data_xy[0], I2C_MASTER_ACK);     // reads FT6X36_P1_XH_REG
     i2c_master_read_byte(i2c_cmd, &data_xy[1], I2C_MASTER_NACK);    // reads FT6X36_P1_XL_REG
     i2c_master_stop(i2c_cmd);
-    esp_err_t ret = i2c_master_cmd_begin(TOUCH_I2C_PORT, i2c_cmd, 1000 / portTICK_RATE_MS);
+    ret = i2c_master_cmd_begin(TOUCH_I2C_PORT, i2c_cmd, 1000 / portTICK_RATE_MS);
     i2c_cmd_link_delete(i2c_cmd);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Error getting X coordinates: %s", esp_err_to_name(ret));

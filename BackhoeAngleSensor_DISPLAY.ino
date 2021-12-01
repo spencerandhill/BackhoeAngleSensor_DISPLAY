@@ -17,7 +17,7 @@ void setup(void) {
 
 void loop(void) {
 // Let the LVGL-GUI do its work
-  lv_task_handler();
+  lv_timer_handler();
   // delay(5);
   loopEspNow();
 }
